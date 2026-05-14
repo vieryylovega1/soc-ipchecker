@@ -14,30 +14,30 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 # ==========================
-# CONFIG (Render ENV Support)
+# CONFIG
 # ==========================
 ABUSEIPDB_API_KEY = os.getenv("ABUSEIPDB_API_KEY", "ISI_API_KEY_KAMU_DISINI")
 ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "SOC_ADMIN_123")
 
 DB_FILE = "ip_cache.db"
-CACHE_TTL = 86400  # 24 jam cache
+CACHE_TTL = 86400  # 24 jam
 MAX_WORKERS = 10
 
 
 # ==========================
 # FASTAPI INIT
 # ==========================
-app = FastAPI(title="SOC IP Reputation Checker (Render)")
+app = FastAPI(title="SOC IP Reputation Checker (Render + SQLite Cache)")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # internal only, bisa dibatasi kalau perlu
+    allow_origins=["*"],  # internal only (bisa dibatasi)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Static file serving
+# Serve static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
@@ -131,7 +131,7 @@ def save_cache_ip(ip: str, data: dict):
 
 
 # ==========================
-# PARSER REPORT
+# PARSER REPORT (NO DEST IP)
 # ==========================
 def parse_events(report_text: str):
     blocks = re.split(r"\n\s*\n", report_text.strip())
@@ -163,7 +163,7 @@ def parse_events(report_text: str):
 
 
 # ==========================
-# ABUSEIPDB CHECKER (WITH SQLITE CACHE)
+# ABUSEIPDB CHECKER
 # ==========================
 def check_abuseipdb(ip: str):
     cached = get_cached_ip(ip)
@@ -227,12 +227,14 @@ def home():
 @app.post("/analyze")
 def analyze_report(data: ReportInput):
     events = parse_events(data.report_text)
+
     unique_ips = list(set([e["sourceIP"] for e in events if e["sourceIP"]]))
 
     ip_reputation = {}
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = {executor.submit(check_abuseipdb, ip): ip for ip in unique_ips}
+
         for future in as_completed(futures):
             ip = futures[future]
             ip_reputation[ip] = future.result()
@@ -252,12 +254,14 @@ def analyze_report(data: ReportInput):
 @app.post("/download_csv")
 def download_csv(data: ReportInput):
     events = parse_events(data.report_text)
+
     unique_ips = list(set([e["sourceIP"] for e in events if e["sourceIP"]]))
 
     ip_reputation = {}
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = {executor.submit(check_abuseipdb, ip): ip for ip in unique_ips}
+
         for future in as_completed(futures):
             ip = futures[future]
             ip_reputation[ip] = future.result()

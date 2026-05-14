@@ -1,3 +1,22 @@
+function getAbuseBadge(score) {
+  if (score === null || score === undefined || score === "") {
+    return `<span class="badge badge-na">N/A</span>`;
+  }
+
+  const num = parseInt(score);
+  if (isNaN(num)) {
+    return `<span class="badge badge-na">N/A</span>`;
+  }
+
+  if (num <= 20) {
+    return `<span class="badge badge-low">${num}</span>`;
+  } else if (num <= 50) {
+    return `<span class="badge badge-medium">${num}</span>`;
+  } else {
+    return `<span class="badge badge-high">${num}</span>`;
+  }
+}
+
 function getSafeNumber(value) {
   const num = parseInt(value);
   return isNaN(num) ? 0 : num;
@@ -13,7 +32,7 @@ async function analyze() {
   const sortField = document.getElementById("sortField").value;
   const sortDirection = document.getElementById("sortDirection").value;
 
-  const excludeKeyword = document.getElementById("excludeEventKeyword").value.trim().toLowerCase();
+  const excludeKeywordInput = document.getElementById("excludeEventKeyword").value.trim().toLowerCase();
   const excludeScoreInput = document.getElementById("excludeAbuseScore").value.trim();
   const excludeScore = excludeScoreInput ? parseInt(excludeScoreInput) : null;
 
@@ -27,27 +46,30 @@ async function analyze() {
 
   let filteredResults = data.results;
 
-    // Filter exclude multiple keywords (pisahkan dengan koma)
-    if (excludeKeyword) {
-    const keywords = excludeKeyword
-        .split(",")
-        .map(k => k.trim().toLowerCase())
-        .filter(k => k.length > 0);
+  // ==========================
+  // FILTER: EXCLUDE EVENT NAME (MULTI KEYWORD)
+  // ==========================
+  if (excludeKeywordInput) {
+    const keywords = excludeKeywordInput
+      .split(",")
+      .map(k => k.trim().toLowerCase())
+      .filter(k => k.length > 0);
 
     filteredResults = filteredResults.filter(row => {
-        const eventName = (row.eventName || "").toLowerCase();
+      const eventName = (row.eventName || "").toLowerCase();
 
-        // jika eventName mengandung salah satu keyword, maka exclude
-        for (let k of keywords) {
+      for (let k of keywords) {
         if (eventName.includes(k)) {
-            return false;
+          return false;
         }
-        }
-        return true;
+      }
+      return true;
     });
-    }
+  }
 
-  // Filter exclude abuse score >= X
+  // ==========================
+  // FILTER: EXCLUDE ABUSE SCORE >= X
+  // ==========================
   if (excludeScore !== null && !isNaN(excludeScore)) {
     filteredResults = filteredResults.filter(row => {
       const score = row.abuseScore;
@@ -56,20 +78,27 @@ async function analyze() {
     });
   }
 
+  // ==========================
+  // SUMMARY
+  // ==========================
   document.getElementById("summary").innerText =
     `Total Events: ${data.total_events} | Unique Source IP: ${data.total_unique_ips} | Displayed: ${filteredResults.length}`;
 
-  // Sorting
+  // ==========================
+  // SORTING
+  // ==========================
   filteredResults.sort((a, b) => {
     let valA, valB;
 
     if (sortField === "count") {
       valA = getSafeNumber(a.count);
       valB = getSafeNumber(b.count);
-    } else if (sortField === "abuseScore") {
+    }
+    else if (sortField === "abuseScore") {
       valA = getSafeNumber(a.abuseScore);
       valB = getSafeNumber(b.abuseScore);
-    } else if (sortField === "eventName") {
+    }
+    else if (sortField === "eventName") {
       valA = getSafeText(a.eventName);
       valB = getSafeText(b.eventName);
     }
@@ -85,7 +114,9 @@ async function analyze() {
     }
   });
 
-  // Render table
+  // ==========================
+  // RENDER TABLE
+  // ==========================
   const tbody = document.querySelector("#resultTable tbody");
   tbody.innerHTML = "";
 
@@ -98,7 +129,7 @@ async function analyze() {
       <td>${row.url || ""}</td>
       <td>${row.action || ""}</td>
       <td>${row.count || ""}</td>
-      <td>${row.abuseScore ?? ""}</td>
+      <td>${getAbuseBadge(row.abuseScore)}</td>
       <td>${row.totalReports ?? ""}</td>
       <td>${row.isp || ""}</td>
       <td>${row.countryCode || ""}</td>
