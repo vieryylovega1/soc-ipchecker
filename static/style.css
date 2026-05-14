@@ -208,37 +208,21 @@ table {
   width: 100%;
   border-collapse: collapse;
   background: #ffffff;
-  table-layout: fixed;
+
+  /* FIX UTAMA */
+  table-layout: auto;
 }
 
 /* Header */
-th {
-  background: #f1f5f9;
-  color: #0f172a;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  padding: 12px;
-  border-bottom: 1px solid #cbd5e1;
-  text-align: left;
-  vertical-align: top;
-
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
-}
-
-/* Cell */
-td {
+th, td {
   font-size: 13px;
   padding: 12px;
   border-bottom: 1px solid #e2e8f0;
   color: #0f172a;
   vertical-align: top;
 
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+  /* FIX UTAMA */
+  white-space: nowrap;
 }
 
 /* Hover row */
@@ -249,6 +233,14 @@ tr:hover td {
 /* Align Abuse Score center */
 td:nth-child(6) {
   text-align: center;
+}
+
+td:nth-child(9) {
+  white-space: nowrap;
+}
+
+td:nth-child(2) {
+  white-space: nowrap;
 }
 
 /* ==========================

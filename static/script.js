@@ -1,5 +1,5 @@
 function copyToClipboard(text) {
-  navigator.clipboard.writeText(text)
+  navigator.clipboard.writeText(text || "")
     .then(() => {
       alert("Copied IP: " + text);
     })
@@ -42,48 +42,50 @@ async function analyze() {
   const sortField = document.getElementById("sortField").value;
   const sortDirection = document.getElementById("sortDirection").value;
 
-  const excludeKeywordInput = document.getElementById("excludeEventKeyword").value.trim().toLowerCase();
-  const excludeScoreInput = document.getElementById("excludeAbuseScore").value.trim();
+  const excludeKeywordInput = document
+    .getElementById("excludeEventKeyword")
+    .value
+    .trim()
+    .toLowerCase();
+
+  const excludeScoreInput = document
+    .getElementById("excludeAbuseScore")
+    .value
+    .trim();
+
   const excludeScore = excludeScoreInput ? parseInt(excludeScoreInput) : null;
 
   const res = await fetch("/analyze", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({report_text: reportText})
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ report_text: reportText })
   });
 
   const data = await res.json();
-
-  let filteredResults = data.results;
+  let filteredResults = data.results || [];
 
   // ==========================
-  // FILTER: EXCLUDE EVENT NAME (MULTI KEYWORD)
+  // FILTER: EVENT KEYWORD
   // ==========================
   if (excludeKeywordInput) {
     const keywords = excludeKeywordInput
       .split(",")
-      .map(k => k.trim().toLowerCase())
-      .filter(k => k.length > 0);
+      .map(k => k.trim())
+      .filter(Boolean);
 
     filteredResults = filteredResults.filter(row => {
-      const eventName = (row.eventName || "").toLowerCase();
+      const eventName = getSafeText(row.eventName);
 
-      for (let k of keywords) {
-        if (eventName.includes(k)) {
-          return false;
-        }
-      }
-      return true;
+      return !keywords.some(k => eventName.includes(k));
     });
   }
 
   // ==========================
-  // FILTER: EXCLUDE ABUSE SCORE >= X
+  // FILTER: ABUSE SCORE
   // ==========================
   if (excludeScore !== null && !isNaN(excludeScore)) {
     filteredResults = filteredResults.filter(row => {
-      const score = row.abuseScore;
-      if (score === null || score === undefined) return true;
+      const score = getSafeNumber(row.abuseScore);
       return score < excludeScore;
     });
   }
@@ -103,25 +105,17 @@ async function analyze() {
     if (sortField === "count") {
       valA = getSafeNumber(a.count);
       valB = getSafeNumber(b.count);
-    }
-    else if (sortField === "abuseScore") {
+    } else if (sortField === "abuseScore") {
       valA = getSafeNumber(a.abuseScore);
       valB = getSafeNumber(b.abuseScore);
-    }
-    else if (sortField === "eventName") {
+    } else {
       valA = getSafeText(a.eventName);
       valB = getSafeText(b.eventName);
     }
 
-    if (sortDirection === "asc") {
-      if (valA > valB) return 1;
-      if (valA < valB) return -1;
-      return 0;
-    } else {
-      if (valA > valB) return -1;
-      if (valA < valB) return 1;
-      return 0;
-    }
+    return sortDirection === "asc"
+      ? valA > valB ? 1 : -1
+      : valA < valB ? 1 : -1;
   });
 
   // ==========================
@@ -136,8 +130,10 @@ async function analyze() {
     tr.innerHTML = `
       <td>${row.eventName || ""}</td>
       <td>
-      <span class="copy-ip" onclick="copyToClipboard('${row.sourceIP || ""}')">${row.sourceIP || ""}</span></td>
-      <td>${row.url || ""}</td>
+        <span class="copy-ip" onclick="copyToClipboard('${row.sourceIP || ""}')">
+          ${row.sourceIP || ""}
+        </span>
+      </td>
       <td>${row.action || ""}</td>
       <td>${row.count || ""}</td>
       <td>${getAbuseBadge(row.abuseScore)}</td>
@@ -156,8 +152,8 @@ async function downloadCSV() {
 
   const res = await fetch("/download_csv", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({report_text: reportText})
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ report_text: reportText })
   });
 
   const blob = await res.blob();
@@ -179,8 +175,7 @@ async function clearCache() {
     return;
   }
 
-  const confirmClear = confirm("Apakah kamu yakin ingin menghapus seluruh cache?");
-  if (!confirmClear) return;
+  if (!confirm("Apakah kamu yakin ingin menghapus seluruh cache?")) return;
 
   const res = await fetch(`/clear_cache?token=${encodeURIComponent(token)}`, {
     method: "POST"
@@ -188,9 +183,9 @@ async function clearCache() {
 
   const data = await res.json();
 
-  if (data.status === "SUCCESS") {
-    alert("Cache berhasil dihapus!");
-  } else {
-    alert("Gagal clear cache! Token salah atau unauthorized.");
-  }
+  alert(
+    data.status === "SUCCESS"
+      ? "Cache berhasil dihapus!"
+      : "Gagal clear cache! Token salah atau unauthorized."
+  );
 }
