@@ -1,43 +1,43 @@
 /* ==========================
-   GLOBAL STYLE
+   GLOBAL STYLE (LIGHT MODE)
 ========================== */
 body {
   font-family: "Segoe UI", Arial, sans-serif;
-  background: #0b1220;
-  color: #e5e7eb;
+  background: #f8fafc;
+  color: #0f172a;
   margin: 0;
   padding: 0;
 }
 
+/* ==========================
+   MAIN CONTAINER
+========================== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px;
+}
+
+/* ==========================
+   HEADINGS & TEXT
+========================== */
 h2 {
   font-size: 22px;
   font-weight: 700;
   margin-bottom: 10px;
-  color: #ffffff;
+  color: #0f172a;
 }
 
 h3 {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 10px;
-  color: #ffffff;
+  color: #0f172a;
 }
 
 p {
-  color: #cbd5e1;
-}
-
-/* ==========================
-   PAGE WRAPPER
-========================== */
-body {
-  padding: 30px;
-}
-
-body > * {
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
+  color: #334155;
+  margin-top: 0;
 }
 
 /* ==========================
@@ -48,17 +48,18 @@ textarea {
   height: 260px;
   padding: 14px;
   border-radius: 12px;
-  border: 1px solid #1e293b;
-  background: #111827;
-  color: #f9fafb;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
   font-size: 14px;
   resize: vertical;
   outline: none;
+  box-sizing: border-box;
 }
 
 textarea:focus {
   border-color: #2563eb;
-  box-shadow: 0px 0px 0px 3px rgba(37, 99, 235, 0.3);
+  box-shadow: 0px 0px 0px 3px rgba(37, 99, 235, 0.2);
 }
 
 /* ==========================
@@ -67,16 +68,17 @@ textarea:focus {
 input, select {
   padding: 10px 12px;
   border-radius: 10px;
-  border: 1px solid #1e293b;
-  background: #111827;
-  color: #f9fafb;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
   font-size: 14px;
   outline: none;
+  box-sizing: border-box;
 }
 
 input:focus, select:focus {
   border-color: #2563eb;
-  box-shadow: 0px 0px 0px 3px rgba(37, 99, 235, 0.3);
+  box-shadow: 0px 0px 0px 3px rgba(37, 99, 235, 0.2);
 }
 
 /* ==========================
@@ -88,11 +90,9 @@ button {
   border: none;
   background: #2563eb;
   color: white;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: 0.2s;
-  margin-right: 8px;
-  margin-top: 5px;
 }
 
 button:hover {
@@ -104,12 +104,12 @@ button:active {
 }
 
 /* Download CSV button */
-button:nth-of-type(2) {
-  background: #334155;
+.controls button:nth-of-type(2) {
+  background: #475569;
 }
 
-button:nth-of-type(2):hover {
-  background: #475569;
+.controls button:nth-of-type(2):hover {
+  background: #334155;
 }
 
 /* Clear cache button (admin) */
@@ -125,21 +125,34 @@ button:nth-of-type(2):hover {
    FILTER BOX & ADMIN BOX
 ========================== */
 .filter-box, .admin-box {
-  background: rgba(17, 24, 39, 0.9);
-  border: 1px solid #1e293b;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
   border-radius: 14px;
-  padding: 15px;
-  margin-top: 15px;
-  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.3);
+  padding: 18px;
+  margin-top: 18px;
+  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.06);
 }
 
-.filter-box {
-  width: 100%;
+/* ==========================
+   FILTER ROW
+========================== */
+.filter-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 12px;
+  flex-wrap: wrap;
 }
 
-.admin-box {
-  display: inline-block;
-  margin-top: 25px;
+.filter-row label {
+  min-width: 320px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.filter-row input {
+  flex: 1;
+  min-width: 240px;
 }
 
 /* ==========================
@@ -147,8 +160,8 @@ button:nth-of-type(2):hover {
 ========================== */
 .hint {
   font-size: 12px;
-  color: #94a3b8;
-  margin-top: 8px;
+  color: #64748b;
+  margin-top: 12px;
 }
 
 /* ==========================
@@ -156,53 +169,72 @@ button:nth-of-type(2):hover {
 ========================== */
 #summary {
   font-size: 14px;
-  font-weight: 600;
-  color: #38bdf8;
-  margin-top: 10px;
+  font-weight: 700;
+  color: #2563eb;
+  margin-top: 5px;
 }
 
 /* ==========================
-   TABLE WRAPPER (SCROLL FIX)
+   CONTROLS (SORT + BUTTONS)
+========================== */
+.controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.controls label {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+/* ==========================
+   TABLE WRAPPER
 ========================== */
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
   border-radius: 14px;
-  margin-top: 15px;
+  margin-top: 12px;
+  border: 1px solid #cbd5e1;
 }
 
 /* ==========================
-   TABLE STYLE (FIX ALIGNMENT)
+   TABLE STYLE
 ========================== */
 table {
   width: 100%;
   border-collapse: collapse;
-  border-radius: 14px;
-  overflow: hidden;
-  background: #111827;
-  border: 1px solid #1e293b;
-
-  table-layout: fixed; /* FIX utama agar kolom tidak bergeser */
+  background: #ffffff;
+  table-layout: fixed;
 }
 
 /* Header */
 th {
-  background: #0f172a;
-  color: #f8fafc;
+  background: #f1f5f9;
+  color: #0f172a;
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.6px;
   padding: 12px;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid #cbd5e1;
   text-align: left;
+  vertical-align: top;
+
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 /* Cell */
 td {
   font-size: 13px;
   padding: 12px;
-  border-bottom: 1px solid #1e293b;
-  color: #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  color: #0f172a;
+  vertical-align: top;
 
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -214,6 +246,11 @@ tr:hover td {
   background: rgba(37, 99, 235, 0.08);
 }
 
+/* Align Abuse Score center */
+td:nth-child(6) {
+  text-align: center;
+}
+
 /* ==========================
    FIX COLUMN WIDTHS
 ========================== */
@@ -222,8 +259,8 @@ th:nth-child(2), td:nth-child(2) { width: 140px; } /* Source IP */
 th:nth-child(3), td:nth-child(3) { width: 200px; } /* URL */
 th:nth-child(4), td:nth-child(4) { width: 90px; }  /* Action */
 th:nth-child(5), td:nth-child(5) { width: 70px; }  /* Count */
-th:nth-child(6), td:nth-child(6) { width: 100px; } /* Abuse Score */
-th:nth-child(7), td:nth-child(7) { width: 110px; } /* Total Reports */
+th:nth-child(6), td:nth-child(6) { width: 120px; } /* Abuse Score */
+th:nth-child(7), td:nth-child(7) { width: 130px; } /* Total Reports */
 th:nth-child(8), td:nth-child(8) { width: 260px; } /* ISP */
 th:nth-child(9), td:nth-child(9) { width: 90px; }  /* Country */
 th:nth-child(10), td:nth-child(10) { width: 180px; } /* Domain */
@@ -236,40 +273,54 @@ th:nth-child(10), td:nth-child(10) { width: 180px; } /* Domain */
   padding: 4px 10px;
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   text-align: center;
-  min-width: 50px;
+  min-width: 55px;
 }
 
 .badge-low {
-  background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
-  border: 1px solid rgba(34, 197, 94, 0.5);
+  background: rgba(34, 197, 94, 0.15);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.4);
 }
 
 .badge-medium {
-  background: rgba(234, 179, 8, 0.2);
-  color: #eab308;
-  border: 1px solid rgba(234, 179, 8, 0.5);
+  background: rgba(234, 179, 8, 0.15);
+  color: #ca8a04;
+  border: 1px solid rgba(234, 179, 8, 0.4);
 }
 
 .badge-high {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
 .badge-na {
-  background: rgba(148, 163, 184, 0.15);
-  color: #94a3b8;
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(148, 163, 184, 0.2);
+  color: #64748b;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+/* ==========================
+   CLICKABLE IP
+========================== */
+.copy-ip {
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.copy-ip:hover {
+  color: #1d4ed8;
 }
 
 /* ==========================
    RESPONSIVE
 ========================== */
 @media (max-width: 900px) {
-  body {
+  .container {
     padding: 15px;
   }
 
@@ -279,25 +330,14 @@ th:nth-child(10), td:nth-child(10) { width: 180px; } /* Domain */
 
   button {
     width: 100%;
-    margin-right: 0;
   }
 
   input, select {
     width: 100%;
     margin-top: 8px;
   }
-}
 
-/* ==========================
-   CLICKABLE IP
-========================== */
-.copy-ip {
-  color: #38bdf8;
-  cursor: pointer;
-  font-weight: 600;
-  text-decoration: underline;
-}
-
-.copy-ip:hover {
-  color: #60a5fa;
+  .filter-row label {
+    min-width: 100%;
+  }
 }

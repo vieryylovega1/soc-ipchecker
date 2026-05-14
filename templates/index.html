@@ -6,83 +6,90 @@
 </head>
 
 <body>
+  <div class="container">
 
-  <h2>SOC Threat Report IP Reputation Checker</h2>
+    <h2>SOC Threat Report IP Reputation Checker</h2>
 
-  <p>Paste laporan monitoring SOC kamu di bawah ini:</p>
-  <textarea id="report" placeholder="Paste laporan disini..."></textarea>
-  <br><br>
+    <p>Paste laporan monitoring SOC kamu di bawah ini:</p>
 
-  <!-- FILTER OPTIONS -->
-  <div class="filter-box">
-    <h3>Filter Options</h3>
+    <textarea id="report" placeholder="Paste laporan disini..."></textarea>
 
-    <label><b>Exclude Event Name (keyword, pisahkan dengan koma):</b></label>
-    <input type="text" id="excludeEventKeyword" placeholder="contoh: Misc Exploit, Monitoring F5">
+    <!-- FILTER OPTIONS -->
+    <div class="filter-box">
+      <h3>Filter Options</h3>
 
-    <br><br>
+      <div class="filter-row">
+        <label>Exclude Event Name (keyword, pisahkan dengan koma):</label>
+        <input type="text" id="excludeEventKeyword" placeholder="contoh: Misc Exploit, Monitoring F5">
+      </div>
 
-    <label><b>Exclude Abuse Score >=</b></label>
-    <input type="number" id="excludeAbuseScore" placeholder="contoh: 50" min="0" max="100">
+      <div class="filter-row">
+        <label>Exclude Abuse Score >=</label>
+        <input type="number" id="excludeAbuseScore" placeholder="contoh: 50" min="0" max="100">
+      </div>
 
-    <p class="hint">
-      *Jika diisi, event dengan Abuse Score lebih besar atau sama dengan nilai ini akan dibuang dari tabel.
-    </p>
+      <p class="hint">
+        *Jika diisi, event dengan Abuse Score lebih besar atau sama dengan nilai ini akan dibuang dari tabel.
+      </p>
+    </div>
+
+    <!-- SORT + BUTTON CONTROLS -->
+    <div class="controls">
+      <label>Sort Mode:</label>
+
+      <select id="sortField">
+        <option value="count" selected>Count</option>
+        <option value="abuseScore">Abuse Score</option>
+        <option value="eventName">Event Name</option>
+      </select>
+
+      <select id="sortDirection">
+        <option value="desc" selected>Descending</option>
+        <option value="asc">Ascending</option>
+      </select>
+
+      <button onclick="analyze()">Analyze</button>
+      <button onclick="downloadCSV()">Download CSV</button>
+    </div>
+
+    <h3>Results</h3>
+    <p id="summary"></p>
+
+    <!-- TABLE WRAPPER -->
+    <div class="table-wrapper">
+      <table id="resultTable">
+        <thead>
+          <tr>
+            <th>Event Name</th>
+            <th>Source IP</th>
+            <th>URL</th>
+            <th>Action</th>
+            <th>Count</th>
+            <th>Abuse Score</th>
+            <th>Total Reports</th>
+            <th>ISP</th>
+            <th>Country</th>
+            <th>Domain</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div class="admin-box">
+      <h3>Admin Panel</h3>
+
+      <div class="filter-row">
+        <label>Admin Token:</label>
+        <input type="password" id="adminToken" placeholder="Masukkan token admin">
+      </div>
+
+      <button onclick="clearCache()">Clear Cache</button>
+    </div>
+
   </div>
 
-  <br>
-
-  <!-- SORT OPTIONS -->
-  <label><b>Sort Mode:</b></label>
-
-  <select id="sortField">
-    <option value="count" selected>Count</option>
-    <option value="abuseScore">Abuse Score</option>
-    <option value="eventName">Event Name</option>
-  </select>
-
-  <select id="sortDirection">
-    <option value="desc" selected>Descending</option>
-    <option value="asc">Ascending</option>
-  </select>
-
-  <button onclick="analyze()">Analyze</button>
-  <button onclick="downloadCSV()">Download CSV</button>
-
-  <h3>Results</h3>
-  <p id="summary"></p>
-
-  <!-- TABLE WRAPPER (FIX TABLE ALIGNMENT + SCROLL) -->
-  <div class="table-wrapper">
-    <table id="resultTable">
-      <thead>
-        <tr>
-          <th>Event Name</th>
-          <th>Source IP</th>
-          <th>URL</th>
-          <th>Action</th>
-          <th>Count</th>
-          <th>Abuse Score</th>
-          <th>Total Reports</th>
-          <th>ISP</th>
-          <th>Country</th>
-          <th>Domain</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <!-- ADMIN PANEL -->
-  <div class="admin-box">
-    <h3>Admin Panel</h3>
-
-    <label><b>Admin Token:</b></label>
-    <input type="password" id="adminToken" placeholder="Masukkan token admin">
-
-    <button onclick="clearCache()">Clear Cache</button>
-  </div>
-
-  <script src="/static/script.js"></script>
+  <script src="/static/script.js?v=100"></script>
 </body>
 </html>
