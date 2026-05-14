@@ -30,14 +30,14 @@ p {
 /* ==========================
    PAGE WRAPPER
 ========================== */
+body {
+  padding: 30px;
+}
+
 body > * {
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-}
-
-body {
-  padding: 30px;
 }
 
 /* ==========================
@@ -92,6 +92,7 @@ button {
   cursor: pointer;
   transition: 0.2s;
   margin-right: 8px;
+  margin-top: 5px;
 }
 
 button:hover {
@@ -102,7 +103,7 @@ button:active {
   transform: scale(0.98);
 }
 
-/* Secondary button look */
+/* Download CSV button */
 button:nth-of-type(2) {
   background: #334155;
 }
@@ -161,18 +162,30 @@ button:nth-of-type(2):hover {
 }
 
 /* ==========================
-   TABLE STYLE
+   TABLE WRAPPER (SCROLL FIX)
+========================== */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 14px;
+  margin-top: 15px;
+}
+
+/* ==========================
+   TABLE STYLE (FIX ALIGNMENT)
 ========================== */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
   border-radius: 14px;
   overflow: hidden;
   background: #111827;
   border: 1px solid #1e293b;
+
+  table-layout: fixed; /* FIX utama agar kolom tidak bergeser */
 }
 
+/* Header */
 th {
   background: #0f172a;
   color: #f8fafc;
@@ -181,45 +194,39 @@ th {
   letter-spacing: 0.6px;
   padding: 12px;
   border-bottom: 1px solid #1e293b;
+  text-align: left;
 }
 
+/* Cell */
 td {
   font-size: 13px;
   padding: 12px;
   border-bottom: 1px solid #1e293b;
   color: #e2e8f0;
+
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
+/* Hover row */
 tr:hover td {
   background: rgba(37, 99, 235, 0.08);
 }
 
 /* ==========================
-   RESPONSIVE TABLE
+   FIX COLUMN WIDTHS
 ========================== */
-@media (max-width: 900px) {
-  body {
-    padding: 15px;
-  }
-
-  textarea {
-    height: 220px;
-  }
-
-  table, th, td {
-    font-size: 12px;
-  }
-
-  button {
-    margin-top: 10px;
-    width: 100%;
-  }
-
-  input, select {
-    width: 100%;
-    margin-top: 8px;
-  }
-}
+th:nth-child(1), td:nth-child(1) { width: 320px; } /* Event Name */
+th:nth-child(2), td:nth-child(2) { width: 140px; } /* Source IP */
+th:nth-child(3), td:nth-child(3) { width: 200px; } /* URL */
+th:nth-child(4), td:nth-child(4) { width: 90px; }  /* Action */
+th:nth-child(5), td:nth-child(5) { width: 70px; }  /* Count */
+th:nth-child(6), td:nth-child(6) { width: 100px; } /* Abuse Score */
+th:nth-child(7), td:nth-child(7) { width: 110px; } /* Total Reports */
+th:nth-child(8), td:nth-child(8) { width: 260px; } /* ISP */
+th:nth-child(9), td:nth-child(9) { width: 90px; }  /* Country */
+th:nth-child(10), td:nth-child(10) { width: 180px; } /* Domain */
 
 /* ==========================
    BADGE SCORE
@@ -256,4 +263,41 @@ tr:hover td {
   background: rgba(148, 163, 184, 0.15);
   color: #94a3b8;
   border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+@media (max-width: 900px) {
+  body {
+    padding: 15px;
+  }
+
+  textarea {
+    height: 220px;
+  }
+
+  button {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  input, select {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
+
+/* ==========================
+   CLICKABLE IP
+========================== */
+.copy-ip {
+  color: #38bdf8;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.copy-ip:hover {
+  color: #60a5fa;
 }

@@ -20,7 +20,7 @@
     <label><b>Exclude Event Name (keyword, pisahkan dengan koma):</b></label>
     <input type="text" id="excludeEventKeyword" placeholder="contoh: Misc Exploit, Monitoring F5">
 
-    <br>
+    <br><br>
 
     <label><b>Exclude Abuse Score >=</b></label>
     <input type="number" id="excludeAbuseScore" placeholder="contoh: 50" min="0" max="100">
@@ -52,29 +52,34 @@
   <h3>Results</h3>
   <p id="summary"></p>
 
-  <table id="resultTable">
-    <thead>
-      <tr>
-        <th>Event Name</th>
-        <th>Source IP</th>
-        <th>URL</th>
-        <th>Action</th>
-        <th>Count</th>
-        <th>Abuse Score</th>
-        <th>Total Reports</th>
-        <th>ISP</th>
-        <th>Country</th>
-        <th>Domain</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <!-- TABLE WRAPPER (FIX TABLE ALIGNMENT + SCROLL) -->
+  <div class="table-wrapper">
+    <table id="resultTable">
+      <thead>
+        <tr>
+          <th>Event Name</th>
+          <th>Source IP</th>
+          <th>URL</th>
+          <th>Action</th>
+          <th>Count</th>
+          <th>Abuse Score</th>
+          <th>Total Reports</th>
+          <th>ISP</th>
+          <th>Country</th>
+          <th>Domain</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
   <!-- ADMIN PANEL -->
   <div class="admin-box">
     <h3>Admin Panel</h3>
+
     <label><b>Admin Token:</b></label>
     <input type="password" id="adminToken" placeholder="Masukkan token admin">
+
     <button onclick="clearCache()">Clear Cache</button>
   </div>
 

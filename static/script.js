@@ -1,3 +1,13 @@
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text)
+    .then(() => {
+      alert("Copied IP: " + text);
+    })
+    .catch(() => {
+      alert("Gagal copy IP!");
+    });
+}
+
 function getAbuseBadge(score) {
   if (score === null || score === undefined || score === "") {
     return `<span class="badge badge-na">N/A</span>`;
@@ -125,7 +135,8 @@ async function analyze() {
 
     tr.innerHTML = `
       <td>${row.eventName || ""}</td>
-      <td>${row.sourceIP || ""}</td>
+      <td>
+      <span class="copy-ip" onclick="copyToClipboard('${row.sourceIP || ""}')">${row.sourceIP || ""}</span></td>
       <td>${row.url || ""}</td>
       <td>${row.action || ""}</td>
       <td>${row.count || ""}</td>
