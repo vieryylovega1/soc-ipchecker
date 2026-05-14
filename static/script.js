@@ -95,7 +95,6 @@ async function analyze() {
     tr.innerHTML = `
       <td>${row.eventName || ""}</td>
       <td>${row.sourceIP || ""}</td>
-      <td>${row.destinationIP || ""}</td>
       <td>${row.url || ""}</td>
       <td>${row.action || ""}</td>
       <td>${row.count || ""}</td>

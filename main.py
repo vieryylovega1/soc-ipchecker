@@ -147,7 +147,6 @@ def parse_events(report_text: str):
             event_name = event_title_match.group(2).strip()
 
         src_ip_match = re.search(r"Source IP\s*:\s*([\d\.]+)", block)
-        dst_ip_match = re.search(r"Destination IP\s*:\s*([\d\.]+)", block)
         action_match = re.search(r"Action\s*:\s*(.*)", block)
         count_match = re.search(r"Count\s*:\s*(\d+)", block)
         url_match = re.search(r"URL\s*:\s*(.*)", block)
@@ -155,7 +154,6 @@ def parse_events(report_text: str):
         events.append({
             "eventName": event_name,
             "sourceIP": src_ip_match.group(1) if src_ip_match else None,
-            "destinationIP": dst_ip_match.group(1) if dst_ip_match else None,
             "url": url_match.group(1).strip() if url_match else None,
             "action": action_match.group(1).strip() if action_match else None,
             "count": int(count_match.group(1)) if count_match else 0
@@ -271,7 +269,6 @@ def download_csv(data: ReportInput):
         final_results.append({
             "Event Name": e.get("eventName"),
             "Source IP": e.get("sourceIP"),
-            "Destination IP": e.get("destinationIP"),
             "URL": e.get("url"),
             "Action": e.get("action"),
             "Count": e.get("count"),
