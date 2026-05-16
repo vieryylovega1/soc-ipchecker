@@ -36,81 +36,61 @@ function getAbuseBadge(score) {
     return `<span class="badge badge-na">N/A</span>`;
   }
 
-  const num = parseInt(score);
+  const num = parseInt(score, 10);
   if (isNaN(num)) {
     return `<span class="badge badge-na">N/A</span>`;
   }
 
-  if (num <= 20) {
-    return `<span class="badge badge-low">${num}</span>`;
-  }
-
-  if (num <= 50) {
-    return `<span class="badge badge-medium">${num}</span>`;
-  }
-
+  if (num <= 20) return `<span class="badge badge-low">${num}</span>`;
+  if (num <= 50) return `<span class="badge badge-medium">${num}</span>`;
   return `<span class="badge badge-high">${num}</span>`;
 }
 
 function getSafeNumber(value) {
-  const num = parseInt(value);
+  const num = parseInt(value, 10);
   return isNaN(num) ? 0 : num;
+}
+
+function getNullableNumber(value) {
+  const num = parseInt(value, 10);
+  return isNaN(num) ? null : num;
 }
 
 function getSafeText(value) {
   return (value || "").toString().toLowerCase();
 }
 
-async function analyze() {
-  const reportText = document.getElementById("report").value;
-  const sortField = document.getElementById("sortField").value;
-  const sortDirection = document.getElementById("sortDirection").value;
-
-  const excludeKeywordInput = document
-    .getElementById("excludeEventKeyword")
-    .value
-    .trim()
-    .toLowerCase();
-
-  const excludeScoreInput = document
-    .getElementById("excludeAbuseScore")
-    .value
-    .trim();
-
-  const excludeScore = excludeScoreInput ? parseInt(excludeScoreInput) : null;
-
-  const res = await fetch("/analyze", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ report_text: reportText })
-  });
-
-  const data = await res.json();
-  let filteredResults = data.results || [];
+function applyFilters(results, excludeKeywordInput, excludeScore) {
+  let filtered = [...results];
 
   if (excludeKeywordInput) {
     const keywords = excludeKeywordInput
       .split(",")
-      .map(k => k.trim())
-      .filter(Boolean);
+      .map(k => k.trim().toLowerCase())
+      .filter(k => k.length > 0);
 
-    filteredResults = filteredResults.filter(row => {
+    filtered = filtered.filter(row => {
       const eventName = getSafeText(row.eventName);
-      return !keywords.some(k => eventName.includes(k));
+      return !keywords.some(keyword => eventName.includes(keyword));
     });
   }
 
   if (excludeScore !== null && !isNaN(excludeScore)) {
-    filteredResults = filteredResults.filter(row => {
-      const score = getSafeNumber(row.abuseScore);
-      return score < excludeScore;
+    filtered = filtered.filter(row => {
+      const score = getNullableNumber(row.abuseScore);
+
+      // N/A tetap ditampilkan karena tidak bisa dipastikan <= threshold
+      if (score === null) return true;
+
+      return score > excludeScore;
     });
   }
 
-  document.getElementById("summary").innerText =
-    `Total Events: ${data.total_events} | Unique Source IP: ${data.total_unique_ips} | Displayed: ${filteredResults.length}`;
+  return filtered;
+}
 
-  filteredResults.sort((a, b) => {
+function sortResults(results, sortField, sortDirection) {
+  results.sort((a, b) => {
     let valA;
     let valB;
 
@@ -132,16 +112,20 @@ async function analyze() {
       : (valA < valB ? 1 : -1);
   });
 
+  return results;
+}
+
+function renderTable(rows) {
   const tbody = document.querySelector("#resultTable tbody");
   tbody.innerHTML = "";
 
-  filteredResults.forEach(row => {
+  rows.forEach(row => {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
       <td>
         <span class="copy-ip" onclick="copyToClipboard('${row.sourceIP || ""}')">
-          ${row.sourceIP || ""}
+          ${row.sourceIP || "-"}
         </span>
       </td>
       <td>${row.isp || "-"}</td>
@@ -163,6 +147,42 @@ async function analyze() {
   });
 
   applySavedColumnWidths();
+}
+
+async function analyze() {
+  const reportText = document.getElementById("report").value;
+  const sortField = document.getElementById("sortField").value;
+  const sortDirection = document.getElementById("sortDirection").value;
+
+  const excludeKeywordInput = document
+    .getElementById("excludeEventKeyword")
+    .value
+    .trim()
+    .toLowerCase();
+
+  const excludeScoreInput = document
+    .getElementById("excludeAbuseScore")
+    .value
+    .trim();
+
+  const excludeScore = excludeScoreInput ? parseInt(excludeScoreInput, 10) : null;
+
+  const res = await fetch("/analyze", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ report_text: reportText })
+  });
+
+  const data = await res.json();
+  const results = data.results || [];
+
+  let filteredResults = applyFilters(results, excludeKeywordInput, excludeScore);
+  filteredResults = sortResults(filteredResults, sortField, sortDirection);
+
+  document.getElementById("summary").innerText =
+    `Total Events: ${data.total_events} | Unique Source IP: ${data.total_unique_ips} | Displayed: ${filteredResults.length}`;
+
+  renderTable(filteredResults);
 }
 
 async function downloadCSV() {
@@ -232,7 +252,7 @@ function applySavedColumnWidths() {
   const saved = JSON.parse(localStorage.getItem("columnWidths") || "{}");
 
   Object.keys(saved).forEach(index => {
-    setColumnWidth(parseInt(index), saved[index]);
+    setColumnWidth(parseInt(index, 10), saved[index]);
   });
 }
 
