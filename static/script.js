@@ -235,3 +235,46 @@ async function clearCache() {
       : "Gagal clear cache! Token salah atau unauthorized."
   );
 }
+
+// ==========================
+// RESIZABLE TABLE HEADER
+// ==========================
+window.addEventListener("DOMContentLoaded", () => {
+  const cols = document.querySelectorAll("th.resizable");
+
+  cols.forEach((col) => {
+    let startX;
+    let startWidth;
+
+    const resizer = document.createElement("div");
+    resizer.style.width = "5px";
+    resizer.style.height = "100%";
+    resizer.style.position = "absolute";
+    resizer.style.top = "0";
+    resizer.style.right = "0";
+    resizer.style.cursor = "col-resize";
+    resizer.style.userSelect = "none";
+
+    col.appendChild(resizer);
+
+    resizer.addEventListener("mousedown", initResize);
+
+    function initResize(e) {
+      startX = e.pageX;
+      startWidth = col.offsetWidth;
+
+      document.addEventListener("mousemove", resizeColumn);
+      document.addEventListener("mouseup", stopResize);
+    }
+
+    function resizeColumn(e) {
+      const newWidth = startWidth + (e.pageX - startX);
+      col.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      document.removeEventListener("mousemove", resizeColumn);
+      document.removeEventListener("mouseup", stopResize);
+    }
+  });
+});
