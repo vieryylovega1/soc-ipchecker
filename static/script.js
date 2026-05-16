@@ -1,3 +1,43 @@
+function toggleTheme() {
+  const body = document.body;
+  const button = document.getElementById("themeButton");
+
+  body.classList.toggle("dark-mode");
+
+  const isDark = body.classList.contains("dark-mode");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+
+  button.innerHTML = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const savedTheme = localStorage.getItem("theme");
+  const button = document.getElementById("themeButton");
+
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+    if (button) button.innerHTML = "☀️ Light Mode";
+  } else {
+    if (button) button.innerHTML = "🌙 Dark Mode";
+  }
+});
+
+// ==========================
+// LOAD SAVED THEME
+// ==========================
+window.addEventListener("DOMContentLoaded", () => {
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+
+    const button = document.getElementById("themeButton");
+    if (button) {
+      button.innerHTML = "☀️ Light Mode";
+    }
+  }
+});
+
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text || "")
     .then(() => {
@@ -128,19 +168,25 @@ async function analyze() {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${row.eventName || ""}</td>
       <td>
         <span class="copy-ip" onclick="copyToClipboard('${row.sourceIP || ""}')">
           ${row.sourceIP || ""}
         </span>
       </td>
-      <td>${row.action || ""}</td>
-      <td>${row.count || ""}</td>
+
+      <td>${row.isp || "-"}</td>
+      <td>${row.countryCode || "-"}</td>
+      <td>${row.city || "-"}</td>
+      <td>${row.totalReports ?? "-"}</td>
       <td>${getAbuseBadge(row.abuseScore)}</td>
-      <td>${row.totalReports ?? ""}</td>
-      <td>${row.isp || ""}</td>
-      <td>${row.countryCode || ""}</td>
-      <td>${row.domain || ""}</td>
+      <td>${row.lastReportedAt || "-"}</td>
+      <td>${row.checkedAt || "-"}</td>
+      <td>${row.domain || "-"}</td>
+      <td>${row.eventName || "-"}</td>
+      <td>${row.count || "-"}</td>
+      <td>${row.action || "-"}</td>
+      <td>${row.usageType || "-"}</td>
+      <td>${row.asn || "-"}</td>
     `;
 
     tbody.appendChild(tr);

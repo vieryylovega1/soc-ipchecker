@@ -2,15 +2,33 @@
 <html>
 <head>
   <title>SOC IP Reputation Checker</title>
-  <link rel="stylesheet" href="/static/style.css?v=100">
+  <link rel="stylesheet" href="/static/style.css?v=101">
 </head>
 
 <body>
+
   <div class="container">
 
-    <h2>SOC Threat Report IP Reputation Checker</h2>
+  <div class="top-bar">
 
-    <p>Paste laporan monitoring SOC kamu di bawah ini:</p>
+    <div>
+      <h2>SOC IP Reputation Checker</h2>
+
+      <p class="subtitle">
+        Paste Laporannya Bosku Disini
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="theme-btn"
+      id="themeButton"
+      onclick="toggleTheme()"
+    >
+      🌙 Dark Mode
+    </button>
+
+  </div>
 
     <textarea id="report" placeholder="Paste laporan disini..."></textarea>
 
@@ -60,15 +78,20 @@
       <table id="resultTable">
         <thead>
           <tr>
-            <th>Event Name</th>
-            <th>Source IP</th>
-            <th>Action</th>
-            <th>Count</th>
-            <th>Abuse Score</th>
-            <th>Total Reports</th>
+            <th>IP</th>
             <th>ISP</th>
             <th>Country</th>
+            <th>City</th>
+            <th>TotalReports</th>
+            <th>AbuseConfidenceScore</th>
+            <th>LastReportedAt</th>
+            <th>CheckedAt</th>
             <th>Domain</th>
+            <th>Jenis Aktivitas</th>
+            <th>Count</th>
+            <th>Action</th>
+            <th>Usage Type</th>
+            <th>ASN</th>
           </tr>
         </thead>
         <tbody></tbody>
