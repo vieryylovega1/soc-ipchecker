@@ -7,10 +7,12 @@ function toggleTheme() {
   const isDark = body.classList.contains("dark-mode");
   localStorage.setItem("theme", isDark ? "dark" : "light");
 
-  button.innerHTML = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+  if (button) {
+    button.innerHTML = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+  }
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+function loadSavedTheme() {
   const savedTheme = localStorage.getItem("theme");
   const button = document.getElementById("themeButton");
 
@@ -18,34 +20,15 @@ window.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("dark-mode");
     if (button) button.innerHTML = "☀️ Light Mode";
   } else {
+    document.body.classList.remove("dark-mode");
     if (button) button.innerHTML = "🌙 Dark Mode";
   }
-});
-
-// ==========================
-// LOAD SAVED THEME
-// ==========================
-window.addEventListener("DOMContentLoaded", () => {
-  const savedTheme = localStorage.getItem("theme");
-
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark-mode");
-
-    const button = document.getElementById("themeButton");
-    if (button) {
-      button.innerHTML = "☀️ Light Mode";
-    }
-  }
-});
+}
 
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text || "")
-    .then(() => {
-      alert("Copied IP: " + text);
-    })
-    .catch(() => {
-      alert("Gagal copy IP!");
-    });
+    .then(() => alert("Copied IP: " + text))
+    .catch(() => alert("Gagal copy IP!"));
 }
 
 function getAbuseBadge(score) {
@@ -60,11 +43,13 @@ function getAbuseBadge(score) {
 
   if (num <= 20) {
     return `<span class="badge badge-low">${num}</span>`;
-  } else if (num <= 50) {
-    return `<span class="badge badge-medium">${num}</span>`;
-  } else {
-    return `<span class="badge badge-high">${num}</span>`;
   }
+
+  if (num <= 50) {
+    return `<span class="badge badge-medium">${num}</span>`;
+  }
+
+  return `<span class="badge badge-high">${num}</span>`;
 }
 
 function getSafeNumber(value) {
@@ -78,7 +63,6 @@ function getSafeText(value) {
 
 async function analyze() {
   const reportText = document.getElementById("report").value;
-
   const sortField = document.getElementById("sortField").value;
   const sortDirection = document.getElementById("sortDirection").value;
 
@@ -104,9 +88,6 @@ async function analyze() {
   const data = await res.json();
   let filteredResults = data.results || [];
 
-  // ==========================
-  // FILTER: EVENT KEYWORD
-  // ==========================
   if (excludeKeywordInput) {
     const keywords = excludeKeywordInput
       .split(",")
@@ -115,14 +96,10 @@ async function analyze() {
 
     filteredResults = filteredResults.filter(row => {
       const eventName = getSafeText(row.eventName);
-
       return !keywords.some(k => eventName.includes(k));
     });
   }
 
-  // ==========================
-  // FILTER: ABUSE SCORE
-  // ==========================
   if (excludeScore !== null && !isNaN(excludeScore)) {
     filteredResults = filteredResults.filter(row => {
       const score = getSafeNumber(row.abuseScore);
@@ -130,17 +107,12 @@ async function analyze() {
     });
   }
 
-  // ==========================
-  // SUMMARY
-  // ==========================
   document.getElementById("summary").innerText =
     `Total Events: ${data.total_events} | Unique Source IP: ${data.total_unique_ips} | Displayed: ${filteredResults.length}`;
 
-  // ==========================
-  // SORTING
-  // ==========================
   filteredResults.sort((a, b) => {
-    let valA, valB;
+    let valA;
+    let valB;
 
     if (sortField === "count") {
       valA = getSafeNumber(a.count);
@@ -153,14 +125,13 @@ async function analyze() {
       valB = getSafeText(b.eventName);
     }
 
+    if (valA === valB) return 0;
+
     return sortDirection === "asc"
-      ? valA > valB ? 1 : -1
-      : valA < valB ? 1 : -1;
+      ? (valA > valB ? 1 : -1)
+      : (valA < valB ? 1 : -1);
   });
 
-  // ==========================
-  // RENDER TABLE
-  // ==========================
   const tbody = document.querySelector("#resultTable tbody");
   tbody.innerHTML = "";
 
@@ -173,7 +144,6 @@ async function analyze() {
           ${row.sourceIP || ""}
         </span>
       </td>
-
       <td>${row.isp || "-"}</td>
       <td>${row.countryCode || "-"}</td>
       <td>${row.city || "-"}</td>
@@ -191,6 +161,8 @@ async function analyze() {
 
     tbody.appendChild(tr);
   });
+
+  applySavedColumnWidths();
 }
 
 async function downloadCSV() {
@@ -236,45 +208,82 @@ async function clearCache() {
   );
 }
 
-// ==========================
-// RESIZABLE TABLE HEADER
-// ==========================
-window.addEventListener("DOMContentLoaded", () => {
-  const cols = document.querySelectorAll("th.resizable");
+function setColumnWidth(columnIndex, width) {
+  const table = document.getElementById("resultTable");
+  const rows = table.querySelectorAll("tr");
 
-  cols.forEach((col) => {
-    let startX;
-    let startWidth;
-
-    const resizer = document.createElement("div");
-    resizer.style.width = "5px";
-    resizer.style.height = "100%";
-    resizer.style.position = "absolute";
-    resizer.style.top = "0";
-    resizer.style.right = "0";
-    resizer.style.cursor = "col-resize";
-    resizer.style.userSelect = "none";
-
-    col.appendChild(resizer);
-
-    resizer.addEventListener("mousedown", initResize);
-
-    function initResize(e) {
-      startX = e.pageX;
-      startWidth = col.offsetWidth;
-
-      document.addEventListener("mousemove", resizeColumn);
-      document.addEventListener("mouseup", stopResize);
-    }
-
-    function resizeColumn(e) {
-      const newWidth = startWidth + (e.pageX - startX);
-      col.style.width = `${newWidth}px`;
-    }
-
-    function stopResize() {
-      document.removeEventListener("mousemove", resizeColumn);
-      document.removeEventListener("mouseup", stopResize);
+  rows.forEach(row => {
+    const cell = row.children[columnIndex];
+    if (cell) {
+      cell.style.width = `${width}px`;
+      cell.style.minWidth = `${width}px`;
+      cell.style.maxWidth = `${width}px`;
     }
   });
+}
+
+function saveColumnWidth(columnIndex, width) {
+  const saved = JSON.parse(localStorage.getItem("columnWidths") || "{}");
+  saved[columnIndex] = width;
+  localStorage.setItem("columnWidths", JSON.stringify(saved));
+}
+
+function applySavedColumnWidths() {
+  const saved = JSON.parse(localStorage.getItem("columnWidths") || "{}");
+
+  Object.keys(saved).forEach(index => {
+    setColumnWidth(parseInt(index), saved[index]);
+  });
+}
+
+function initResizableColumns() {
+  const headers = document.querySelectorAll("#resultTable th.resizable");
+
+  headers.forEach((th, index) => {
+    if (th.querySelector(".resizer")) return;
+
+    const resizer = document.createElement("span");
+    resizer.className = "resizer";
+    th.appendChild(resizer);
+
+    let startX = 0;
+    let startWidth = 0;
+
+    resizer.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      startX = e.pageX;
+      startWidth = th.offsetWidth;
+
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+
+      function resize(e) {
+        const newWidth = Math.max(70, startWidth + (e.pageX - startX));
+        setColumnWidth(index, newWidth);
+      }
+
+      function stopResize() {
+        const finalWidth = th.offsetWidth;
+        saveColumnWidth(index, finalWidth);
+
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
+
+        document.removeEventListener("mousemove", resize);
+        document.removeEventListener("mouseup", stopResize);
+      }
+
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+  });
+
+  applySavedColumnWidths();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  loadSavedTheme();
+  initResizableColumns();
 });

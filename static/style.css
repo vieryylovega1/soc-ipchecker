@@ -1,6 +1,10 @@
 /* ==========================
-   GLOBAL STYLE (LIGHT MODE)
+   GLOBAL
 ========================== */
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Segoe UI", Arial, sans-serif;
   background: #f8fafc;
@@ -9,29 +13,23 @@ body {
   padding: 0;
 }
 
-/* ==========================
-   MAIN CONTAINER
-========================== */
 .container {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 30px;
 }
 
-/* ==========================
-   HEADINGS & TEXT
-========================== */
 h2 {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0;
   color: #0f172a;
 }
 
 h3 {
   font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 10px;
+  font-weight: 800;
+  margin: 0 0 12px;
   color: #0f172a;
 }
 
@@ -41,31 +39,54 @@ p {
 }
 
 /* ==========================
-   TEXTAREA
+   TOP BAR
+========================== */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+  padding: 20px 24px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff, #f1f5f9);
+  border: 1px solid #dbe3ef;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.theme-btn {
+  min-width: 140px;
+  background: #0f172a;
+}
+
+.theme-btn:hover {
+  background: #1e293b;
+}
+
+/* ==========================
+   FORM ELEMENTS
 ========================== */
 textarea {
   width: 100%;
   height: 260px;
   padding: 14px;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px solid #cbd5e1;
   background: #ffffff;
   color: #0f172a;
   font-size: 14px;
   resize: vertical;
   outline: none;
-  box-sizing: border-box;
 }
 
-textarea:focus {
-  border-color: #2563eb;
-  box-shadow: 0px 0px 0px 3px rgba(37, 99, 235, 0.2);
-}
-
-/* ==========================
-   INPUTS & SELECT
-========================== */
-input, select {
+input,
+select {
   padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid #cbd5e1;
@@ -73,24 +94,25 @@ input, select {
   color: #0f172a;
   font-size: 14px;
   outline: none;
-  box-sizing: border-box;
 }
 
-input:focus, select:focus {
+textarea:focus,
+input:focus,
+select:focus {
   border-color: #2563eb;
-  box-shadow: 0px 0px 0px 3px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
 }
 
 /* ==========================
-   BUTTON STYLE
+   BUTTONS
 ========================== */
 button {
   padding: 10px 18px;
   border-radius: 10px;
   border: none;
   background: #2563eb;
-  color: white;
-  font-weight: 700;
+  color: #ffffff;
+  font-weight: 800;
   cursor: pointer;
   transition: 0.2s;
 }
@@ -103,7 +125,6 @@ button:active {
   transform: scale(0.98);
 }
 
-/* Download CSV button */
 .controls button:nth-of-type(2) {
   background: #475569;
 }
@@ -112,7 +133,6 @@ button:active {
   background: #334155;
 }
 
-/* Clear cache button (admin) */
 .admin-box button {
   background: #dc2626;
 }
@@ -122,60 +142,43 @@ button:active {
 }
 
 /* ==========================
-   FILTER BOX & ADMIN BOX
+   CARDS
 ========================== */
-.filter-box, .admin-box {
+.filter-box,
+.admin-box {
   background: #ffffff;
   border: 1px solid #cbd5e1;
-  border-radius: 14px;
-  padding: 18px;
+  border-radius: 16px;
+  padding: 20px;
   margin-top: 18px;
-  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
-/* ==========================
-   FILTER ROW
-========================== */
 .filter-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 320px 1fr;
   gap: 12px;
   align-items: center;
   margin-top: 12px;
-  flex-wrap: wrap;
 }
 
 .filter-row label {
-  min-width: 320px;
-  font-weight: 700;
+  font-weight: 800;
   color: #0f172a;
 }
 
 .filter-row input {
-  flex: 1;
-  min-width: 240px;
+  width: 100%;
 }
 
-/* ==========================
-   HINT TEXT
-========================== */
 .hint {
   font-size: 12px;
   color: #64748b;
-  margin-top: 12px;
+  margin: 12px 0 0;
 }
 
 /* ==========================
-   SUMMARY
-========================== */
-#summary {
-  font-size: 14px;
-  font-weight: 700;
-  color: #2563eb;
-  margin-top: 5px;
-}
-
-/* ==========================
-   CONTROLS (SORT + BUTTONS)
+   CONTROLS
 ========================== */
 .controls {
   display: flex;
@@ -190,8 +193,15 @@ button:active {
   color: #0f172a;
 }
 
+#summary {
+  font-size: 14px;
+  font-weight: 800;
+  color: #2563eb;
+  margin-top: 5px;
+}
+
 /* ==========================
-   TABLE WRAPPER
+   TABLE
 ========================== */
 .table-wrapper {
   width: 100%;
@@ -199,33 +209,70 @@ button:active {
   border-radius: 14px;
   margin-top: 12px;
   border: 1px solid #cbd5e1;
+  background: #ffffff;
 }
 
-/* ==========================
-   TABLE STYLE
-========================== */
 table {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   border-collapse: collapse;
   background: #ffffff;
-
-  /* FIX UTAMA */
   table-layout: auto;
 }
 
-/* ==========================
-   RESIZABLE TABLE COLUMN
-========================== */
-th.resizable {
-  position: relative;
+th,
+td {
+  font-size: 13px;
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #0f172a;
+  vertical-align: top;
+  white-space: nowrap;
 }
 
+th {
+  position: relative;
+  background: #f1f5f9;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: left;
+  user-select: none;
+}
+
+tr:hover td {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+td:nth-child(6) {
+  text-align: center;
+}
+
+/* Default column sizing */
+th:nth-child(1), td:nth-child(1) { min-width: 150px; }
+th:nth-child(2), td:nth-child(2) { min-width: 220px; }
+th:nth-child(3), td:nth-child(3) { min-width: 110px; }
+th:nth-child(4), td:nth-child(4) { min-width: 110px; }
+th:nth-child(5), td:nth-child(5) { min-width: 130px; }
+th:nth-child(6), td:nth-child(6) { min-width: 170px; }
+th:nth-child(7), td:nth-child(7) { min-width: 210px; }
+th:nth-child(8), td:nth-child(8) { min-width: 120px; }
+th:nth-child(9), td:nth-child(9) { min-width: 160px; }
+th:nth-child(10), td:nth-child(10) { min-width: 360px; }
+th:nth-child(11), td:nth-child(11) { min-width: 90px; }
+th:nth-child(12), td:nth-child(12) { min-width: 100px; }
+th:nth-child(13), td:nth-child(13) { min-width: 150px; }
+th:nth-child(14), td:nth-child(14) { min-width: 180px; }
+
+/* ==========================
+   RESIZABLE COLUMNS
+========================== */
 th.resizable::after {
   content: "";
   position: absolute;
-  right: 0;
   top: 0;
-  width: 6px;
+  right: 0;
+  width: 7px;
   height: 100%;
   cursor: col-resize;
   user-select: none;
@@ -235,52 +282,8 @@ th.resizable:hover::after {
   background: rgba(37, 99, 235, 0.25);
 }
 
-/* Header */
-th, td {
-  font-size: 13px;
-  padding: 12px;
-  border-bottom: 1px solid #e2e8f0;
-  color: #0f172a;
-  vertical-align: top;
-
-  /* FIX UTAMA */
-  white-space: nowrap;
-}
-
-/* Hover row */
-tr:hover td {
-  background: rgba(37, 99, 235, 0.08);
-}
-
-/* Align Abuse Score center */
-td:nth-child(6) {
-  text-align: center;
-}
-
-td:nth-child(9) {
-  white-space: nowrap;
-}
-
-td:nth-child(2) {
-  white-space: nowrap;
-}
-
 /* ==========================
-   FIX COLUMN WIDTHS
-========================== */
-th:nth-child(1), td:nth-child(1) { width: 320px; } /* Event Name */
-th:nth-child(2), td:nth-child(2) { width: 140px; } /* Source IP */
-th:nth-child(3), td:nth-child(3) { width: 200px; } /* URL */
-th:nth-child(4), td:nth-child(4) { width: 90px; }  /* Action */
-th:nth-child(5), td:nth-child(5) { width: 70px; }  /* Count */
-th:nth-child(6), td:nth-child(6) { width: 120px; } /* Abuse Score */
-th:nth-child(7), td:nth-child(7) { width: 130px; } /* Total Reports */
-th:nth-child(8), td:nth-child(8) { width: 260px; } /* ISP */
-th:nth-child(9), td:nth-child(9) { width: 90px; }  /* Country */
-th:nth-child(10), td:nth-child(10) { width: 180px; } /* Domain */
-
-/* ==========================
-   BADGE SCORE
+   BADGES
 ========================== */
 .badge {
   display: inline-block;
@@ -331,76 +334,8 @@ th:nth-child(10), td:nth-child(10) { width: 180px; } /* Domain */
 }
 
 /* ==========================
-   RESPONSIVE
-========================== */
-@media (max-width: 900px) {
-  .container {
-    padding: 15px;
-  }
-
-  textarea {
-    height: 220px;
-  }
-
-  button {
-    width: 100%;
-  }
-
-  input, select {
-    width: 100%;
-    margin-top: 8px;
-  }
-
-  .filter-row label {
-    min-width: 100%;
-  }
-}
-
-/* ==========================
-   THEME TOGGLE
-========================== */
-.theme-toggle {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 15px;
-}
-
-/* ==========================
    DARK MODE
 ========================== */
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 22px;
-  padding: 18px 22px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #ffffff, #f1f5f9);
-  border: 1px solid #dbe3ef;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-}
-
-.top-bar h2 {
-  margin: 0 0 6px 0;
-}
-
-.subtitle {
-  margin: 0;
-  color: #64748b;
-  font-size: 14px;
-}
-
-.theme-btn {
-  min-width: 140px;
-  background: #0f172a;
-}
-
-.theme-btn:hover {
-  background: #1e293b;
-}
-
-/* Dark Mode */
 body.dark-mode {
   background: #0b1220;
   color: #e5e7eb;
@@ -425,24 +360,14 @@ body.dark-mode p {
 
 body.dark-mode textarea,
 body.dark-mode input,
-body.dark-mode select {
+body.dark-mode select,
+body.dark-mode .filter-box,
+body.dark-mode .admin-box,
+body.dark-mode .table-wrapper,
+body.dark-mode table {
   background: #111827;
   color: #f9fafb;
   border-color: #334155;
-}
-
-body.dark-mode .filter-box,
-body.dark-mode .admin-box {
-  background: #111827;
-  border-color: #334155;
-}
-
-body.dark-mode .table-wrapper {
-  border-color: #334155;
-}
-
-body.dark-mode table {
-  background: #111827;
 }
 
 body.dark-mode th {
@@ -467,4 +392,47 @@ body.dark-mode .theme-btn {
 
 body.dark-mode .theme-btn:hover {
   background: #e2e8f0;
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+@media (max-width: 900px) {
+  .container {
+    padding: 15px;
+  }
+
+  .top-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .theme-btn,
+  button,
+  input,
+  select {
+    width: 100%;
+  }
+
+  textarea {
+    height: 220px;
+  }
+
+  .filter-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+}
+
+.resizer:hover {
+  background: rgba(37, 99, 235, 0.25);
 }
